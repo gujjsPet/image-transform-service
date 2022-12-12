@@ -35,7 +35,7 @@ func UploadHandler(c *gin.Context) {
 	if err != nil {		
 		log.Fatal(err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-            "message": "No file is received",
+            "message": "error receiving file",
         })
 
 	}
@@ -43,7 +43,12 @@ func UploadHandler(c *gin.Context) {
 	err = c.SaveUploadedFile(file, "storage/"+file.Filename)
 	if err != nil {
 		log.Fatal(err)
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+            "message": "error saving file",
+        })
 	}
 
-	c.String(http.StatusOK, fmt.Sprintf("'%s' uploaded!", file.Filename))
+	c.JSON(http.StatusOK, gin.H{
+		"message": fmt.Sprintf("'%s' uploaded!", file.Filename),
+	})
 }
