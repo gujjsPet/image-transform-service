@@ -4,8 +4,11 @@ import (
 	"net/http"
 	"log"
 	"fmt"
+	"strings"
 
+	"github.com/google/uuid"
 	"github.com/gin-gonic/gin"
+
 	"github.com/gujjsPet/image-transform-service/file"
 )
 
@@ -31,7 +34,7 @@ func DownloadHandler(ctx *gin.Context) {
 
 func UploadHandler(c *gin.Context) {
 	file, err := c.FormFile("file")
-	fmt.Println(c.Request.ParseForm())
+
 	if err != nil {		
 		log.Fatal(err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -40,10 +43,14 @@ func UploadHandler(c *gin.Context) {
 
 	}
 
-	err = c.SaveUploadedFile(file, "storage/"+file.Filename)
+	fileNameSlice := strings.Split(file.Filename, ".")
+	fileExtension := fileNameSlice[len(fileNameSlice) - 1]	
+	newFileName := uuid.New().String()
+
+	err = c.SaveUploadedFile(file, "storage/" + newFileName + "." + fileExtension)
 	if err != nil {
 		log.Fatal(err)
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
             "message": "error saving file",
         })
 	}
