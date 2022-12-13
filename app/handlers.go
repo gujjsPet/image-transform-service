@@ -56,6 +56,7 @@ func UploadHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": fmt.Sprintf("'%s' uploaded!", file.Filename),
+		"message": fmt.Sprintf("'%s' uploaded", file.Filename),
+		"accessName": newFileName + "." + fileExtension,
 	})
 }
