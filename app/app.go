@@ -9,6 +9,7 @@ func Start() {
 
 	router.GET("/ping", PingHandler)
 	router.GET("/file/:filename", DownloadHandler)
+	router.GET("/crop/:filename", CropHandler)
 	router.POST("/file/up", UploadHandler)
 
 	router.Run("localhost:8080")

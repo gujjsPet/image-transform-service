@@ -2,10 +2,11 @@ package file
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 const FilesDirectory string = "storage/"
@@ -22,7 +23,7 @@ func fileExists(fileName string) bool {
 
 func validateExistingFile(fileName string) error {
 	if !validFilename(fileName) {
-		return errors.New("filename " + fileName + " contains illegel character")
+		return errors.New("filename " + fileName + " contains illegal character")
 	}
 
 	if !fileExists(fileName) {
@@ -32,11 +33,20 @@ func validateExistingFile(fileName string) error {
 	return nil
 }
 
+func constructFilePath(fileName string) string {
+	return filepath.Join(FilesDirectory, fileName)
+}
+
 func GetFilePath(fileName string) (string, error) {
-	fmt.Println(filepath.Abs(filepath.Join(FilesDirectory, fileName)))
 	if err := validateExistingFile(fileName); err != nil {
 		return "", err
 	}
 
-	return filepath.Join(FilesDirectory, fileName), nil
+	return constructFilePath(fileName), nil
+}
+
+func GenerateFilename(n string) string {
+	nSlices := strings.Split(n, ".")
+	fExt := nSlices[len(nSlices)-1]
+	return uuid.New().String() + "." + fExt
 }
